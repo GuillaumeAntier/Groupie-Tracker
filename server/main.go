@@ -8,6 +8,7 @@ import (
 	//"encoding/json"
 	"fmt"
 	"net/http"
+	"log"
 )
 
 var response string
@@ -91,9 +92,19 @@ func data_rel() {
 	
 }
 
+func HandlerMain(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "HTML/index.html")
+}
+
 func main() {
 	data_art()
 	data_loc()
 	data_dat()
 	data_rel()
+
+	http.HandleFunc("/", HandlerMain)
+
+	fmt.Println("Server is listening...")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+
 }
