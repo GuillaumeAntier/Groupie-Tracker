@@ -10,13 +10,13 @@ import (
 	"net/http"
 )
 
-var response string
+
 var respart []string
 var resploc []string
 var respdat []string
 var resprel []string
-var err []string
-var name string
+var err string
+
 
 type Artist struct{
 	id string
@@ -44,14 +44,14 @@ type Relations struct{
 	index []string
 	id string
 	datesLocations string
-}
+}/*
 func convertion(b []byte) string {
 	s := make([]string, len(b))
 	for i := range b {
 		s[i] = string(b[i])
 	}
 	return string.Join(s,",")
-}
+}*/
 func data_art() {
 	urlart := "https://groupietrackers.herokuapp.com/api/artists"
 	respart, err := http.Get(urlart)
@@ -66,9 +66,8 @@ func data_art() {
 		return 
 	}
 	
-	artistJSON := (bodyart)
 	var artist Artist
-	json.Unmarshal([]byte(artistJSON), artist)
+	err = json.Unmarshal(bodyart, &artist)
 	fmt.Println(artist)
 	
 }
@@ -87,9 +86,9 @@ func data_loc() {
 		return 
 	}
 	
-	locationsJSON := (bodyloc)
+	
 	var locations Locations
-	json.Unmarshal([]byte(locationsJSON), locations)
+	err = json.Unmarshal(bodyloc, &locations)
 	fmt.Println(locations)
 	
 	
@@ -107,9 +106,9 @@ func data_dat() {
 		fmt.Println("Erreur lors de la lecture:", err)
 		return 
 	}
-	datesJSON := (bodydat)
+	
 	var dates Dates
-	json.Unmarshal([]byte(datesJSON), dates)
+	err = json.Unmarshal(bodydat, &dates)
 	fmt.Println(dates)
 	
 }
@@ -126,9 +125,9 @@ func data_rel() {
 		fmt.Println("Erreur lors de la lecture:", err)
 		return 
 	}
-	relationsJSON := (bodyrel)
+	
 	var relations Relations
-	json.Unmarshal([]byte(relationsJSON), relations)
+	err = json.Unmarshal(bodyrel, &relations)
 	fmt.Println(relations)
 	
 }
