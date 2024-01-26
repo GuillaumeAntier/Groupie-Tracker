@@ -5,7 +5,7 @@ import (
 	//"os"
 	//"bufio"
 	"io/ioutil"
-	//"encoding/json"
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -19,12 +19,38 @@ var err []string
 var name string
 
 type Artist struct{
-	ID string
-	Image string
-	Name string
-	Members []string
-	CreationDate int
-	FirstAlbum string
+	id string
+	image string
+	name string
+	members []string
+	creationDate int
+	firstAlbum string
+	locations string
+	concertDates string
+	relations string
+}
+type Locations struct{
+	index []string
+	id string
+	locations string
+	dates string
+}
+type Dates struct{
+	index []string
+	id string
+	dates string
+}
+type Relations struct{
+	index []string
+	id string
+	datesLocations string
+}
+func convertion(b []byte) string {
+	s := make([]string, len(b))
+	for i := range b {
+		s[i] = string(b[i])
+	}
+	return string.Join(s,",")
 }
 func data_art() {
 	urlart := "https://groupietrackers.herokuapp.com/api/artists"
@@ -39,9 +65,14 @@ func data_art() {
 		fmt.Println("Erreur lors de la lecture:", err)
 		return 
 	}
-	fmt.Println(string(bodyart))
+	
+	artistJSON := (bodyart)
+	var artist Artist
+	json.Unmarshal([]byte(artistJSON), artist)
+	fmt.Println(artist)
 	
 }
+
 func data_loc() {
 	urlloc := "https://groupietrackers.herokuapp.com/api/locations"
 	resploc, err := http.Get(urlloc)
@@ -55,7 +86,12 @@ func data_loc() {
 		fmt.Println("Erreur lors de la lecture:", err)
 		return 
 	}
-	fmt.Println(string(bodyloc))
+	
+	locationsJSON := (bodyloc)
+	var locations Locations
+	json.Unmarshal([]byte(locationsJSON), locations)
+	fmt.Println(locations)
+	
 	
 }
 func data_dat() {
@@ -71,7 +107,10 @@ func data_dat() {
 		fmt.Println("Erreur lors de la lecture:", err)
 		return 
 	}
-	fmt.Println(string(bodydat))
+	datesJSON := (bodydat)
+	var dates Dates
+	json.Unmarshal([]byte(datesJSON), dates)
+	fmt.Println(dates)
 	
 }
 func data_rel() {
@@ -87,7 +126,10 @@ func data_rel() {
 		fmt.Println("Erreur lors de la lecture:", err)
 		return 
 	}
-	fmt.Println(string(bodyrel))
+	relationsJSON := (bodyrel)
+	var relations Relations
+	json.Unmarshal([]byte(relationsJSON), relations)
+	fmt.Println(relations)
 	
 }
 
