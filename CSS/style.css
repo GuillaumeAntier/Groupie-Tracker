@@ -14,3 +14,7 @@ body {
     
         }
 }
+
+.onglet a{
+    gap: 50px 60px;
+}
