@@ -6,6 +6,8 @@ import (
 	//"bufio"
 	"html/template"
 	"io/ioutil"
+	"strings"
+
 	//"encoding/json"
 	"encoding/json"
 	"fmt"
@@ -23,59 +25,48 @@ var name string
 var artist Artist
 
 type Artist struct{
-	Image string
-	Name string
-}
-func data_loc() {
-	urlloc := "https://groupietrackers.herokuapp.com/api/locations"
-	resploc, err := http.Get(urlloc)
-	if err != nil {
-		fmt.Println("Erreur lors de la requête HTTP:", err)
-		return
-	}
-	defer resploc.Body.Close()
-	bodyloc, err := ioutil.ReadAll(resploc.Body)
-	if err != nil {
-		fmt.Println("Erreur lors de la lecture:", err)
-		return 
-	}
-	fmt.Println(string(bodyloc))
-	
-}
-func data_dat() {
-	urldat := "https://groupietrackers.herokuapp.com/api/dates"
-	respdat, err := http.Get(urldat)
-	if err != nil {
-		fmt.Println("Erreur lors de la requête HTTP:", err)
-		return
-	}
-	defer respdat.Body.Close()
-	bodydat, err := ioutil.ReadAll(respdat.Body)
-	if err != nil {
-		fmt.Println("Erreur lors de la lecture:", err)
-		return 
-	}
-	fmt.Println(string(bodydat))
-	
-}
-func data_rel() {
-	urlrel := "https://groupietrackers.herokuapp.com/api/relation"
-	resprel, err := http.Get(urlrel)
-	if err != nil {
-		fmt.Println("Erreur lors de la requête HTTP:", err)
-		return
-	}
-	defer resprel.Body.Close()
-	bodyrel, err := ioutil.ReadAll(resprel.Body)
-	if err != nil {
-		fmt.Println("Erreur lors de la lecture:", err)
-		return 
-	}
-	fmt.Println(string(bodyrel))
-	
+	ID int `json:"id"`
+	Image string `json:"image"`
+	Name string `json:"name"`
+	Members []string `json:"members"`
+	CreationDate int `json:"creationDate"`
+	FirstAlbum string `json:"firstAlbum"`
 }
 
-func servePage (w http.ResponseWriter, r *http.Request, html string, data []Artist) {
+type Event struct{
+	DatesLocations map[string][]string
+}
+
+type Relation struct {
+	Artist []Artist 
+	Event []Event
+}
+func openAPI(url string) ([]byte, error)  {
+	res, err := http.Get(url)
+	if err != nil {
+		fmt.Println("Erreur lors de la requête HTTP:", err)
+		return nil ,err
+	}
+	defer res.Body.Close()
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println("Erreur lors de la lecture:", err)
+		return nil ,err
+	}
+	return body, nil
+}
+
+func filterArtistsByLetter(artists []Artist, letter string) []Artist {
+	filteredArtists:= make([]Artist, 0)
+	for _, artist := range artists {
+		if strings.HasPrefix(strings.ToLower(artist.Name), strings.ToLower(letter)) {
+				filteredArtists = append(filteredArtists, artist)
+		}
+	}
+	return filteredArtists
+}
+
+func servePageArtist (w http.ResponseWriter, r *http.Request, html string, data []Artist) {
 	page,err := template.ParseFiles("HTML/"+html)
 	if err != nil {
 		fmt.Println(err)
@@ -84,43 +75,65 @@ func servePage (w http.ResponseWriter, r *http.Request, html string, data []Arti
 	if err != nil {
 		fmt.Println(err)
 	}
-
 }
+
+func servePage (w http.ResponseWriter, r *http.Request, html string, data Event) {
+	page,err := template.ParseFiles("HTML/"+html)
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = page.Execute(w, data)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
 func HandlerMain(w http.ResponseWriter, r *http.Request) {
-	urlart := "https://groupietrackers.herokuapp.com/api/artists"
-	respart, err := http.Get(urlart)
-	if err != nil {
-		fmt.Println("Erreur lors de la requête HTTP:", err)
-		return
-	}
-	defer respart.Body.Close()
-	bodyart, err := ioutil.ReadAll(respart.Body)
-	if err != nil {
-		fmt.Println("Erreur lors de la lecture:", err)
-		return 
-	}
+	url := "https://groupietrackers.herokuapp.com/api/"
+	bodyart, err := openAPI(url +"artists")
 	var artist []Artist
 	err = json.Unmarshal(bodyart, &artist)
 	if err != nil {
 		fmt.Println("Erreur lors de la lecture:", err)
 		return
 	}
-	servePage(w, r, "index.html", artist)
+	servePageArtist(w, r, "index.html", artist)
 }
 
-func getHandler(w http.ResponseWriter, r *http.Request) {
+func searchHandler(w http.ResponseWriter, r *http.Request) {
 	research := r.URL.Query().Get("research")
-	fmt.Println(research)
+	url := "https://groupietrackers.herokuapp.com/api/"
+	bodyart, err := openAPI(url +"artists")
+	var artist []Artist
+	err = json.Unmarshal(bodyart, &artist)
+	if err != nil {
+		fmt.Println("Erreur lors de la lecture:", err)
+		return
+	}
+	artist = filterArtistsByLetter(artist, research)
+	servePageArtist(w, r, "result.html", artist)
 
+}
+
+func eventHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+	url := "https://groupietrackers.herokuapp.com/api/"
+	bodyevent, err := openAPI(url +"relation/"+id)
+	var event Event
+	err = json.Unmarshal(bodyevent, &event)
+	if err != nil {
+		fmt.Println("Erreur lors de la lecture:", err)
+		return
+	}
+	servePage(w, r, "event.html", event)
 }
 
 func main() {
-	data_loc()
-	data_dat()
-	data_rel()
-
+	
 	http.HandleFunc("/", HandlerMain)
-	http.HandleFunc("/result", getHandler)
+	http.HandleFunc("/index", HandlerMain)
+	http.HandleFunc("/result", searchHandler)
+	http.HandleFunc("/event", eventHandler)
 
 	fmt.Println("Server is listening...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
