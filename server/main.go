@@ -105,7 +105,7 @@ func HandlerMain(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Erreur lors de la lecture:", err)
 		return
 	}
-	servePage(w, r, "index.html", artist)
+	servePage(w, r, "accueil.html", artist)
 }
 
 func getHandler(w http.ResponseWriter, r *http.Request) {
