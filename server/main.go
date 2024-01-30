@@ -13,6 +13,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sort"
+	"time"
 )
 
 var response string
@@ -34,13 +36,14 @@ type Artist struct{
 }
 
 type Event struct{
-	DatesLocations map[string][]string
+	DatesLocations map[string][]string `json:"datesLocations"`
 }
 
 type Relation struct {
 	Artist []Artist 
 	Event []Event
 }
+
 func openAPI(url string) ([]byte, error)  {
 	res, err := http.Get(url)
 	if err != nil {
@@ -66,7 +69,33 @@ func filterArtistsByLetter(artists []Artist, letter string) []Artist {
 	return filteredArtists
 }
 
-func servePageArtist (w http.ResponseWriter, r *http.Request, html string, data []Artist) {
+func sortDatesLocations(datesLocations map[string][]string) {
+	sortedKeys := make([]string, 0)
+    for key := range datesLocations {
+        sortedKeys = append(sortedKeys, key)
+    }
+    sort.Strings(sortedKeys)
+
+    // Access the values in the sorted order
+    for _, key := range sortedKeys {
+        dates := datesLocations[key]
+        // Sort the dates
+        sort.Slice(dates, func(i, j int) bool {
+            date1, _ := time.Parse("02-01-2006", dates[i])
+            date2, _ := time.Parse("02-01-2006", dates[j])
+            return date1.Before(date2)
+        })
+        // Update the sorted dates in the map
+        datesLocations[key] = dates
+    }
+
+    // Print the sorted map
+    for key, dates := range datesLocations {
+        fmt.Printf("%s: %v\n", key, dates)
+    }
+}
+
+func servePageArtist(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
 	page,err := template.ParseFiles("HTML/"+html)
 	if err != nil {
 		fmt.Println(err)
@@ -75,9 +104,9 @@ func servePageArtist (w http.ResponseWriter, r *http.Request, html string, data 
 	if err != nil {
 		fmt.Println(err)
 	}
-}
+}	
 
-func servePage (w http.ResponseWriter, r *http.Request, html string, data Event) {
+func servePage(w http.ResponseWriter, r *http.Request, html string, data Event) {
 	page,err := template.ParseFiles("HTML/"+html)
 	if err != nil {
 		fmt.Println(err)
@@ -112,7 +141,6 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	artist = filterArtistsByLetter(artist, research)
 	servePageArtist(w, r, "result.html", artist)
-
 }
 
 func eventHandler(w http.ResponseWriter, r *http.Request) {
@@ -125,6 +153,7 @@ func eventHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Erreur lors de la lecture:", err)
 		return
 	}
+	sortDatesLocations(event.DatesLocations)
 	servePage(w, r, "event.html", event)
 }
 
