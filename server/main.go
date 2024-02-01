@@ -2,29 +2,15 @@ package main
 
 import (
 
-	//"os"
-	//"bufio"
 	"html/template"
 	"io/ioutil"
 	"strings"
-
-	//"encoding/json"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"sort"
-	"time"
+	"net/url"
 )
-
-var response string
-var respart []string
-var resploc []string
-var respdat []string
-var resprel []string
-var err []string
-var name string
-var artist Artist
 
 type Artist struct{
 	ID int `json:"id"`
@@ -42,6 +28,11 @@ type Event struct{
 type Relation struct {
 	Artist []Artist 
 	Event []Event
+}
+
+type LocationCity struct {
+    Latitude  string `json:"lat"`
+    Longitude string `json:"lon"`
 }
 
 func openAPI(url string) ([]byte, error)  {
@@ -69,51 +60,29 @@ func filterArtistsByLetter(artists []Artist, letter string) []Artist {
 	return filteredArtists
 }
 
-func sortDatesLocations(datesLocations map[string][]string) {
-	sortedKeys := make([]string, 0)
-    for key := range datesLocations {
-        sortedKeys = append(sortedKeys, key)
-    }
-    sort.Strings(sortedKeys)
-
-    // Access the values in the sorted order
-    for _, key := range sortedKeys {
-        dates := datesLocations[key]
-        // Sort the dates
-        sort.Slice(dates, func(i, j int) bool {
-            date1, _ := time.Parse("02-01-2006", dates[i])
-            date2, _ := time.Parse("02-01-2006", dates[j])
-            return date1.Before(date2)
-        })
-        // Update the sorted dates in the map
-        datesLocations[key] = dates
-    }
-
-    // Print the sorted map
-    for key, dates := range datesLocations {
-        fmt.Printf("%s: %v\n", key, dates)
-    }
-}
-
 func servePageArtist(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
 	page,err := template.ParseFiles("HTML/"+html)
 	if err != nil {
-		fmt.Println(err)
+		http.NotFound(w, r)
+		return
 	}
 	err = page.Execute(w, data)
 	if err != nil {
-		fmt.Println(err)
+		http.NotFound(w, r)
+		return
 	}
 }	
 
 func servePage(w http.ResponseWriter, r *http.Request, html string, data Event) {
 	page,err := template.ParseFiles("HTML/"+html)
 	if err != nil {
-		fmt.Println(err)
+		http.NotFound(w, r)
+		return
 	}
 	err = page.Execute(w, data)
 	if err != nil {
-		fmt.Println(err)
+		http.NotFound(w, r)
+		return
 	}
 }
 
@@ -123,7 +92,7 @@ func HandlerMain(w http.ResponseWriter, r *http.Request) {
 	var artist []Artist
 	err = json.Unmarshal(bodyart, &artist)
 	if err != nil {
-		fmt.Println("Erreur lors de la lecture:", err)
+		http.NotFound(w, r)
 		return
 	}
 	servePageArtist(w, r, "index.html", artist)
@@ -136,7 +105,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	var artist []Artist
 	err = json.Unmarshal(bodyart, &artist)
 	if err != nil {
-		fmt.Println("Erreur lors de la lecture:", err)
+		http.NotFound(w, r)
 		return
 	}
 	artist = filterArtistsByLetter(artist, research)
@@ -150,11 +119,43 @@ func eventHandler(w http.ResponseWriter, r *http.Request) {
 	var event Event
 	err = json.Unmarshal(bodyevent, &event)
 	if err != nil {
-		fmt.Println("Erreur lors de la lecture:", err)
+		http.NotFound(w, r)
 		return
 	}
-	sortDatesLocations(event.DatesLocations)
+	for _, locations := range event.DatesLocations {
+		latitude,longitude,err := getCoordinates(locations[0])
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+		fmt.Println("Latitude:", latitude, "Longitude:", longitude)
+	}
 	servePage(w, r, "event.html", event)
+}
+
+func getCoordinates(location string) (string, string, error) {
+    baseURL := "https://nominatim.openstreetmap.org/search"
+    params := url.Values{}
+    params.Set("q", location)
+    params.Set("format", "json")
+
+    resp, err := http.Get(baseURL + "?" + params.Encode())
+    if err != nil {
+        return "", "", err
+    }
+    defer resp.Body.Close()
+
+    var results []LocationCity
+    err = json.NewDecoder(resp.Body).Decode(&results)
+    if err != nil {
+        return "", "", err
+    }
+
+    if len(results) == 0 {
+        return "", "", fmt.Errorf("No results found for location: %s", location)
+    }
+
+    return results[0].Latitude, results[0].Longitude, nil
 }
 
 func main() {
