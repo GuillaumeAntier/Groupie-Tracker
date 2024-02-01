@@ -22,9 +22,18 @@ var err []string
 var name string
 var artist Artist
 
+type Interface struct{
+	
+}
 type Artist struct{
 	Image string
 	Name string
+}
+type Localisation struct{
+	//index []string
+	//id string
+	Localisations string
+	Dates string
 }
 func data_loc() {
 	urlloc := "https://groupietrackers.herokuapp.com/api/locations"
@@ -74,7 +83,6 @@ func data_rel() {
 	fmt.Println(string(bodyrel))
 	
 }
-
 func servePage (w http.ResponseWriter, r *http.Request, html string, data []Artist) {
 	page,err := template.ParseFiles("HTML/"+html)
 	if err != nil {
@@ -108,6 +116,7 @@ func HandlerMain(w http.ResponseWriter, r *http.Request) {
 	servePage(w, r, "accueil.html", artist)
 }
 
+
 func getHandler(w http.ResponseWriter, r *http.Request) {
 	research := r.URL.Query().Get("research")
 	fmt.Println(research)
@@ -121,6 +130,7 @@ func main() {
 
 	http.HandleFunc("/", HandlerMain)
 	http.HandleFunc("/result", getHandler)
+	
 
 	fmt.Println("Server is listening...")
 	fmt.Println("(http://localhost:8080) - Serveur démarré sur le port", port)
