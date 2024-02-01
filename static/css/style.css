@@ -31,4 +31,14 @@ body {
     height: auto;
 }
 
+.img-artiste {
+    border-radius: 20%;
+    border: solid;
+}
 
+a {
+    text-decoration: none;
+    font-size: 18px;
+    margin-right: 40px;
+    color: black;
+}

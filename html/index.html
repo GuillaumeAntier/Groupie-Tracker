@@ -15,7 +15,7 @@
           </a>
         </section>
         <section class="global">
-          <section class="onglet">
+          <section>
             <a href="">Accueil</a>
             <a href="">Artiste</a>
             <a href="">Localisation</a>
@@ -30,7 +30,7 @@
     <div class="cover-artiste-grid">
       {{range .}}
         <div class="cover-item">
-          <img src="{{.Image}}" alt="{{.Name}}">
+          <img src="{{.Image}}" alt="{{.Name}}" class="img-artiste">
           <p>{{.Name}}</p>
         </div>
       {{end}}
