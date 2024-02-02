@@ -16,5 +16,21 @@ body {
 }
 
 .onglet a{
-    gap: 50px 60px;
+    margin: 0px 10px;
+    text-decoration: none;
+    color: black;
+    font-size: x-large;
+    transition: 1.9s;
+}
+
+.onglet a:hover{
+    opacity: 0.25;
+    transform: scale(2,05);
+}
+
+.barre{
+    display: flex;
+    margin: 20px;
+    padding: 10px;
+    border-radius: 30px;
 }
