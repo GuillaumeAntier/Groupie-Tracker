@@ -9,10 +9,17 @@ body {
         .global {
             display: flex;
             align-items: center;
-            gap: 40px;
-            margin-left: 10%;
+            gap: 50px;
+            margin-left: auto;
     
         }
+}
+
+.onglet {
+    display: flex;
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre horizontalement */
+    margin-right: 350px;
 }
 
 .cover-artiste-grid {
