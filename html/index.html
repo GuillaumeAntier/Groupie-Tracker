@@ -16,9 +16,9 @@
         </section>
         <section class="global">
           <section class="onglet">
-            <a href="">Accueil</a>
-            <a href="">Artiste</a>
-            <a href="">Localisation</a>
+            <a href="index.html">Accueil</a>
+            <a href="result.html">Artiste</a>
+            <a href="event.html">Evenement</a>
             <a href="">Date</a>
           </section>
           <section class="barre">
@@ -31,6 +31,10 @@
       {{range .}}
         <div class="cover-item">
           <img src="{{.Image}}" alt="{{.Name}}" class="img-artiste">
+          <div class="info">
+            <h2></h2>
+            <p></p>
+          </div>
           <p>{{.Name}}</p>
         </div>
       {{end}}
