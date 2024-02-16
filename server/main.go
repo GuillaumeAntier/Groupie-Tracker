@@ -24,11 +24,6 @@ type Event struct {
 	DatesLocations map[string][]string `json:"datesLocations"`
 }
 
-type Relation struct {
-	Artist []Artist
-	Event  []Event
-}
-
 type LocationCity struct {
 	Latitude  string `json:"lat"`
 	Longitude string `json:"lon"`
@@ -60,27 +55,33 @@ func filterArtistsByLetter(artists []Artist, letter string) []Artist {
 }
 
 func servePageArtist(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
-	page, err := template.ParseFiles("html/" + html)
+	page, err := template.ParseFiles("HTML/" + html)
 	if err != nil {
-		http.NotFound(w, r)
+		http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
 		return
 	}
 	err = page.Execute(w, data)
 	if err != nil {
-		http.NotFound(w, r)
+		http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
 		return
 	}
 }
 
-func servePage(w http.ResponseWriter, r *http.Request, html string, data Event) {
-	page, err := template.ParseFiles("html/" + html)
+func servePageEvent(w http.ResponseWriter, r *http.Request, html string, data Event, coordinatesMap map[string][]LocationCity) {
+	page, err := template.ParseFiles("HTML/" + html)
 	if err != nil {
-		http.NotFound(w, r)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = page.Execute(w, data)
+	err = page.Execute(w, struct {
+		DatesLocations Event
+		Coordinates    map[string][]LocationCity
+	}{
+		DatesLocations: data,
+		Coordinates:    coordinatesMap,
+	})
 	if err != nil {
-		http.NotFound(w, r)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -91,7 +92,7 @@ func HandlerMain(w http.ResponseWriter, r *http.Request) {
 	var artist []Artist
 	err = json.Unmarshal(bodyart, &artist)
 	if err != nil {
-		http.NotFound(w, r)
+		http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
 		return
 	}
 	servePageArtist(w, r, "index.html", artist)
@@ -104,7 +105,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	var artist []Artist
 	err = json.Unmarshal(bodyart, &artist)
 	if err != nil {
-		http.NotFound(w, r)
+		http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
 		return
 	}
 	artist = filterArtistsByLetter(artist, research)
@@ -118,18 +119,22 @@ func eventHandler(w http.ResponseWriter, r *http.Request) {
 	var event Event
 	err = json.Unmarshal(bodyevent, &event)
 	if err != nil {
-		http.NotFound(w, r)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	for _, locations := range event.DatesLocations {
-		latitude, longitude, err := getCoordinates(locations[0])
+	cordinatesMap := make(map[string][]LocationCity)
+
+	fmt.Println(event.DatesLocations)
+
+	for location, _ := range event.DatesLocations {
+		latitude, longitude, err := getCoordinates(location)
 		if err != nil {
-			http.NotFound(w, r)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		fmt.Println("Latitude:", latitude, "Longitude:", longitude)
+		cordinatesMap[location] = []LocationCity{{latitude, longitude}}
 	}
-	servePage(w, r, "event.html", event)
+	servePageEvent(w, r, "event.html", event, cordinatesMap)
 }
 
 func getCoordinates(location string) (string, string, error) {
@@ -153,16 +158,17 @@ func getCoordinates(location string) (string, string, error) {
 	if len(results) == 0 {
 		return "", "", fmt.Errorf("No results found for location: %s", location)
 	}
+	fmt.Println(results[0].Latitude, results[0].Longitude)
 
 	return results[0].Latitude, results[0].Longitude, nil
 }
 
 func main() {
-	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("css"))))
+
 	http.HandleFunc("/", HandlerMain)
-	http.HandleFunc("/index.html", HandlerMain)
-	http.HandleFunc("/result.html", searchHandler)
-	http.HandleFunc("/event.html", eventHandler)
+	http.HandleFunc("/index", HandlerMain)
+	http.HandleFunc("/result", searchHandler)
+	http.HandleFunc("/event", eventHandler)
 
 	fmt.Println("Server is listening...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
