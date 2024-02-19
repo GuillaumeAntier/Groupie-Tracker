@@ -10,6 +10,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"sort"
+	"time"
 )
 
 type Artist struct{
@@ -23,6 +25,11 @@ type Artist struct{
 
 type Event struct{
 	DatesLocations map[string][]string `json:"datesLocations"`
+}
+
+type LocationDates struct{
+	Location string
+	Dates []string
 }
 
 type LocationCity struct {
@@ -55,6 +62,20 @@ func filterArtistsByLetter(artists []Artist, letter string) []Artist {
 	return filteredArtists
 }
 
+func sortDatesLocations(datesLocations map[string][]string) []LocationDates {
+	var locationDatesSlice []LocationDates
+	for location, dates := range datesLocations {
+		locationDatesSlice = append(locationDatesSlice, LocationDates{location, dates})
+	}
+	sort.Slice(locationDatesSlice, func(i, j int) bool {
+		layout := "02-01-2006"
+		date1, _ := time.Parse(layout, locationDatesSlice[i].Dates[0])
+		date2, _ := time.Parse(layout, locationDatesSlice[j].Dates[0])
+		return date1.Before(date2)
+	})
+	return locationDatesSlice
+}
+
 func servePageArtist(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
 	page,err := template.ParseFiles("HTML/"+html)
 	if err != nil {
@@ -68,14 +89,14 @@ func servePageArtist(w http.ResponseWriter, r *http.Request, html string, data [
 	}
 }	
 
-func servePageEvent(w http.ResponseWriter, r *http.Request, html string, data Event, coordinatesMap map[string][]LocationCity) {
+func servePageEvent(w http.ResponseWriter, r *http.Request, html string, data []LocationDates, coordinatesMap map[string][]LocationCity) {
 	page,err := template.ParseFiles("HTML/"+html)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	err = page.Execute(w, struct {
-    	DatesLocations Event
+    	DatesLocations []LocationDates
     	Coordinates map[string][]LocationCity
 	}{
     	DatesLocations : data,
@@ -125,9 +146,8 @@ func eventHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	locationDateSlice := sortDatesLocations(event.DatesLocations)	
 	cordinatesMap := make(map[string][]LocationCity)
-
-	fmt.Println(event.DatesLocations)
 
 	for location, _ := range event.DatesLocations {
 		latitude, longitude, err := getCoordinates(location)
@@ -137,12 +157,13 @@ func eventHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		cordinatesMap[location] = []LocationCity{{latitude,longitude}}
 	}
-	servePageEvent(w, r, "event.html", event, cordinatesMap)
+	servePageEvent(w, r, "event.html", locationDateSlice, cordinatesMap)
 }
 
 func getCoordinates(location string) (string, string, error) {
     baseURL := "https://nominatim.openstreetmap.org/search"
     params := url.Values{}
+	location = strings.Replace(location, "-", ",", -1)
     params.Set("q", location)
     params.Set("format", "json")
 
@@ -161,17 +182,17 @@ func getCoordinates(location string) (string, string, error) {
     if len(results) == 0 {
         return "","", fmt.Errorf("No results found for location: %s", location)
     }
-	fmt.Println(results[0].Latitude, results[0].Longitude)
 
     return results[0].Latitude, results[0].Longitude, nil
 }
 
 func main() {
-	
+	http.Handle("/JS/", http.StripPrefix("/JS/", http.FileServer(http.Dir("JS"))))
 	http.HandleFunc("/", HandlerMain)
 	http.HandleFunc("/index", HandlerMain)
 	http.HandleFunc("/result", searchHandler)
 	http.HandleFunc("/event", eventHandler)
+
 
 	fmt.Println("Server is listening...")
 	log.Fatal(http.ListenAndServe(":8080", nil))

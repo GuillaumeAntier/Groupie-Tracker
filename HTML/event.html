@@ -14,37 +14,20 @@
 <body>
     <a href="/index"><button >Home</button></a>
     <ul>
-        {{range $location, $dates := .DatesLocations.DatesLocations}}
+        {{range .DatesLocations}}
         <li>
-            <p>Location: {{$location}}</p>
-            <p>Dates: {{range $dates}}{{.}}, {{end}}</p>
+            <p>Location: {{.Location}}</p>
+            <p>Dates: {{range .Dates}}{{.}}, {{end}}</p>
         </li>
         {{end}}
     </ul>
     <section>
-        <div id="map" style="width: 600px; height: 400px;">
-        
-        </div>
+        <div id="map" style="width: 600px; height: 400px;"></div>
         <script>
             var eventData = {{.DatesLocations }};  
             var coordinatesMap = {{.Coordinates }};
-            var map = L.map('map').setView([51.5, -0.09], 13);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-            console.log(Object.entries(coordinatesMap));
-            console.log(eventData)
-            for (const [location] of Object.entries(coordinatesMap)) {
-                if (coordinatesMap.hasOwnProperty(location)) {
-                    var latitude = coordinatesMap[location][0].lat;
-                    var longitude = coordinatesMap[location][0].lon;
-        
-                    var marker = L.marker([latitude, longitude]).addTo(map);
-                    marker.bindPopup('Événement: ' + eventData.Name + ', Ville: ' + location);
-                }
-            }
         </script>
+        <script src="/JS/map.js"></script>
     </section>
     
 </body>
