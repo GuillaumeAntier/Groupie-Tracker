@@ -29,8 +29,6 @@ body {
     grid-row-gap: 1em;
   }
 
-    
-
 
 .cover-item {
     text-align: center;
@@ -43,6 +41,10 @@ body {
     border: solid;
 }
 
+.img-artiste:hover {
+    opacity: 0.4; /* Opacité lorsque la souris est sur l'image */
+}
+    
 a {
     text-decoration: none;
     font-size: 18px;

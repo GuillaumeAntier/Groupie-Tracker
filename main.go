@@ -160,9 +160,9 @@ func getCoordinates(location string) (string, string, error) {
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", HandlerMain)
-	http.HandleFunc("/index.html", HandlerMain)
-	http.HandleFunc("/result.html", searchHandler)
-	http.HandleFunc("/event.html", eventHandler)
+	http.HandleFunc("/index", HandlerMain)
+	http.HandleFunc("/result", searchHandler)
+	http.HandleFunc("/event", eventHandler)
 
 	fmt.Println("Server is listening...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
