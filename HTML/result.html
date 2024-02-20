@@ -19,6 +19,10 @@
         {{end}}
         <p>{{.CreationDate}}</p>
         <p>{{.FirstAlbum}}</p>
+        <form action = "/event" method="get">
+            <input type="hidden" name="id" value="{{.ID}}">
+            <button type = "submit" >Events</button>
+        </form>
     {{end}}
 </body>
 </html>
