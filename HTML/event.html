@@ -12,23 +12,29 @@
     crossorigin=""></script>
 </head>
 <body>
+    <script>
+    var eventData = {{.DatesLocations }};  
+    var coordinatesMap = {{.Coordinates }};
+    </script>
     <a href="/index"><button >Home</button></a>
-    <ul>
+    <button onclick="showNextEvent(coordinatesMap)">Show next event</button>
+    <button onclick="showPreviousEvent(coordinatesMap)">Show previous event</button>
+    <p id="event"></p>
+    <ul id="events" style="display: none;">
         {{range .DatesLocations}}
         <li>
-            <p>Location: {{.Location}}</p>
-            <p>Dates: {{range .Dates}}{{.}}, {{end}}</p>
+            <p> {{.Location}}</p>
+            <ul>
+                {{range .Dates}}
+                <li>{{.}}</li>
+                {{end}}
+            </ul>
         </li>
         {{end}}
     </ul>
     <section>
         <div id="map" style="width: 600px; height: 400px;"></div>
-        <script>
-            var eventData = {{.DatesLocations }};  
-            var coordinatesMap = {{.Coordinates }};
-        </script>
         <script src="/JS/map.js"></script>
     </section>
-    
 </body>
 </html>
