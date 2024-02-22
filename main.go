@@ -59,22 +59,30 @@ func filterArtistsByLetter(artists []Artist, letter string) []Artist {
 	return filteredArtists
 }
 
-func servePagePresentation(w http.ResponseWriter, r *http.Request, html string) {
+func servePagePresentation(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
 	page, err := template.ParseFiles("html/" + html)
 	if err != nil {
 		http.NotFound(w, r)
 		return
 	}
-	fmt.Println(page)
+	err = page.Execute(w, data)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
 }
 
-func servePagePresentation2(w http.ResponseWriter, r *http.Request, html string) {
+func servePagePresentation2(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
 	page, err := template.ParseFiles("html/" + html)
 	if err != nil {
 		http.NotFound(w, r)
 		return
 	}
-	fmt.Println(page)
+	err = page.Execute(w, data)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
 }
 
 func servePageArtist(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
@@ -103,13 +111,30 @@ func servePage(w http.ResponseWriter, r *http.Request, html string, data Event) 
 	}
 }
 func Home(w http.ResponseWriter, r *http.Request) {
+	url := "https://groupietrackers.herokuapp.com/api/"
+	bodyart, err := openAPI(url + "artists")
+	var artist []Artist
+	err = json.Unmarshal(bodyart, &artist)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
 
-	servePagePresentation(w, r, "presentation.html")
+	servePagePresentation(w, r, "presentation.html", artist)
+
 }
 
 func Home2(w http.ResponseWriter, r *http.Request) {
+	url := "https://groupietrackers.herokuapp.com/api/"
+	bodyart, err := openAPI(url + "artists")
+	var artist []Artist
+	err = json.Unmarshal(bodyart, &artist)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
 
-	servePagePresentation2(w, r, "presentation2.html")
+	servePagePresentation2(w, r, "presentation2.html", artist)
 }
 
 func HandlerMain(w http.ResponseWriter, r *http.Request) {
