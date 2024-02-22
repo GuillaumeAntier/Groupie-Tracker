@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="../static/css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""/>
@@ -12,6 +13,28 @@
     crossorigin=""></script>
 </head>
 <body>
+    <nav class="haut">
+        <section class="logo">
+            <a href="/index">
+              <img src="../static/image/groupie-tracker.png" width ="200" height="200">
+            </a>
+        </section>
+        <section class="global">
+            <section class="onglet">
+              <a href="index">Accueil</a>
+              <a href="result">Artiste</a>
+            </section>
+          <section class="recherche">
+            <form action = "/result" method="get">
+                <section class="barre">
+                    <input type="text" name="research" placeholder="Rechercher...">
+                    <button type = "submit">Research</button>
+                </section>
+            </form>
+            <a href="/index"><button>Home</button></a>
+          </section>
+        </section>
+    </nav>
     <script>
     var eventData = {{.DatesLocations }};  
     var coordinatesMap = {{.Coordinates }};
@@ -120,27 +143,28 @@ function showPreviousEvent() {
     }
 }
     </script>
-    <a href="/index"><button >Home</button></a>
-    <button onclick="showNextEvent()">Show next event</button>
-    <button onclick="showPreviousEvent()">Show previous event</button>
-    <p id="event"></p>
-    <ul id="events" style="display: none;">
-        {{range .DatesLocations}}
-        <li>
-            <p> {{.Location}}</p>
-            <ul>
-                {{range .Dates}}
-                <li>{{.}}</li>
-                {{end}}
-            </ul>
-        </li>
-        {{end}}
-    </ul>
-    <section>
-        <div id="map" style="width: 600px; height: 400px;"></div>
-        <script src="/JS/map.js">
-            
-        </script>
-    </section>
+    <section class="bouton">
+        <button onclick="showNextEvent()">Show next event</button>
+      <button onclick="showPreviousEvent()">Show previous event</button>
+      </section>
+      <section class="info-event">
+        <p id="event"></p>
+      <ul id="events" style="display: none;">
+          {{range .DatesLocations}}
+          <li>
+              <p> {{.Location}}</p>
+              <ul>
+                  {{range .Dates}}
+                  <li>{{.}}</li>
+                  {{end}}
+              </ul>
+          </li>
+          {{end}}
+      </ul>
+      </section>
+      <section class="carte">
+          <div id="map" style="width: 600px; height: 400px;"></div>
+          <script src="/JS/map.js"></script>
+      </section>
 </body>
 </html>

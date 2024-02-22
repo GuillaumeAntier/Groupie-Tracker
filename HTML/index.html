@@ -3,31 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/style.css">
     <title>Document</title>
 </head>
 <body>
-    <p>Groupie Tracker</p>
-    <a href="/index"><button >Home</button></a>
-    <form action = "/result" method="get">
-        <input type="text" name="research" placeholder="Rechercher...">
-        <button type = "submit" >Research</button>
-    </form>
+    <nav class="haut">
+        <section class="logo">
+            <a href="/index">
+              <img src="../static/image/groupie-tracker.png" width ="200" height="200">
+            </a>
+        </section>
+        <section class="global">
+            <section class="onglet">
+              <a href="index">Accueil</a>
+              <a href="result">Artiste</a>
+            </section>
+          <section class="recherche">
+            <form action = "/result" method="get">
+                <section class="barre">
+                    <input type="text" name="research" placeholder="Rechercher...">
+                    <button type = "submit">Research</button>
+                </section>
+            </form>
+            <a href="/index"><button>Home</button></a>
+          </section>
+        </section>
+    </nav>
     <a href="/index?sort=A-Z"><button >A-Z</button></a>
     <a href="/index?sort=Z-A"><button >Z-A</button></a>
     <a href = "/index"><button>Reset</button></a>
-    
+    <section class="cover-artiste-grid">
         {{range .}}
-        <img src="{{.Image}}" alt="{{.Name}}">
+        <article class="cover-item">
+            <input type="checkbox" id="popup-{{.Name}}" class="popup-trigger">
+            <label for="popup-{{.Name}}">
+                <img src="{{.Image}}" alt="{{.Name}}" class="img-artiste">
+            </label>
+            <div class="popup">
+                <label for="popup-{{.Name}}" class="close-button">x</label>
+                <div class="popup-content">
+                    <h2>{{.Name}}</h2>
+                    <div class="Members">
+                        {{range .Members}}
+                        <p>{{.}}</p>
+                        {{end}}
+                    </div>
+                    <form action = "/event" method="get">
+                      <input type="hidden" name="id" value="{{.ID}}">
+                      <button type = "submit" >Events</button>
+                    </form>
+                    </div>
+              </div>
+            <div class="info">
+                <h2>{{.Name}}</h2>
+            </div>
+        </article>
         
-        {{range .Members}}
-        <p>{{.}}</p>
         {{end}}
-        <p>{{.CreationDate}}</p>
-        <p>{{.FirstAlbum}}</p>
-        <form action = "/event" method="get">
-            <input type="hidden" name="id" value="{{.ID}}">
-            <button type = "submit" >Events</button>
-        </form>
-        {{end}}
+    </section>
 </body>
 </html>

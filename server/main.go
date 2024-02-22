@@ -278,6 +278,7 @@ func main() {
 	fmt.Println(string("\033[34m"), "[SERVER_INFO] : Starting local Server...")
 
 	http.Handle("/JS/", http.StripPrefix("/JS/", http.FileServer(http.Dir("JS"))))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", HandlerMain)
 	http.HandleFunc("/index", HandlerMain)
 	http.HandleFunc("/result", searchHandler)
