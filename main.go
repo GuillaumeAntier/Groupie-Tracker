@@ -59,6 +59,24 @@ func filterArtistsByLetter(artists []Artist, letter string) []Artist {
 	return filteredArtists
 }
 
+func servePagePresentation(w http.ResponseWriter, r *http.Request, html string) {
+	page, err := template.ParseFiles("html/" + html)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	fmt.Println(page)
+}
+
+func servePagePresentation2(w http.ResponseWriter, r *http.Request, html string) {
+	page, err := template.ParseFiles("html/" + html)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	fmt.Println(page)
+}
+
 func servePageArtist(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
 	page, err := template.ParseFiles("html/" + html)
 	if err != nil {
@@ -83,6 +101,15 @@ func servePage(w http.ResponseWriter, r *http.Request, html string, data Event) 
 		http.NotFound(w, r)
 		return
 	}
+}
+func Home(w http.ResponseWriter, r *http.Request) {
+
+	servePagePresentation(w, r, "presentation.html")
+}
+
+func Home2(w http.ResponseWriter, r *http.Request) {
+
+	servePagePresentation2(w, r, "presentation2.html")
 }
 
 func HandlerMain(w http.ResponseWriter, r *http.Request) {
@@ -159,7 +186,9 @@ func getCoordinates(location string) (string, string, error) {
 
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/", HandlerMain)
+	http.HandleFunc("/", Home)
+	http.HandleFunc("/presentation", Home)
+	http.HandleFunc("/presentation2", Home2)
 	http.HandleFunc("/index", HandlerMain)
 	http.HandleFunc("/result", searchHandler)
 	http.HandleFunc("/event", eventHandler)
