@@ -29,8 +29,11 @@
     if (nextEventIndex < events.length) {
         var location = events[nextEventIndex].children[0].textContent;
         var dates = Array.from(events[nextEventIndex].children[1].children).map(li => li.textContent);
-  
-        if (nextDateIndex < dates.length) {
+
+        if (nextDateIndex === -1 ) {
+            nextDateIndex = 1;
+          }
+        if (nextDateIndex < dates.length){
             location = location.trim();
             eventElement.textContent = 'Location: ' + formatLocation(location) + ', Date: ' + dates[nextDateIndex];
             nextDateIndex++;
@@ -93,8 +96,10 @@ function showPreviousEvent() {
         if (nextDateIndex >= dates.length) {
             nextDateIndex = dates.length - 1;
         }
+
         location = location.trim();
         eventElement.textContent = 'Location: ' + formatLocation(location) + ', Date: ' + dates[nextDateIndex];
+        console.log(nextDateIndex);
         nextDateIndex--;
 
         for (const [locationCoord] of Object.entries(coordinatesMap)) {
