@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Groupie-Tracker</title>
     <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="icon" type="image/png" href="/static/image/groupie-tracker.png" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""/>
@@ -21,8 +22,8 @@
         </section>
         <section class="global">
             <section class="onglet">
-              <a href="index">Accueil</a>
-              <a href="result">Artiste</a>
+              <a href="presentation">Présentation</a>
+              <a href="index">Artistes</a>
             </section>
           <section class="recherche">
             <form action = "/result" method="get">
@@ -30,11 +31,12 @@
                     <input type="text" name="research" placeholder="Rechercher..."> 
                 </section>
             </form>
-            <button class = "recherche-btn" type = "submit">Rechercher</button>
+            <button class = "btn" type = "submit">Rechercher</button>
           </section>
         </section>
     </nav>
     <script>
+    var Artist = {{.Artists}}
     var eventData = {{.DatesLocations }};  
     var coordinatesMap = {{.Coordinates }};
     document.addEventListener('DOMContentLoaded', showNextEvent);
@@ -42,7 +44,7 @@
     var nextEventIndex = 0;
     var nextDateIndex = 0; 
 
-    
+    console.log(Artist)
 
     function showNextEvent() {
     var eventElement = document.querySelector('#event');
@@ -57,7 +59,7 @@
           }
         if (nextDateIndex < dates.length){
             location = location.trim();
-            eventElement.textContent = 'Location: ' + formatLocation(location) + ', Date: ' + dates[nextDateIndex];
+            eventElement.innerHTML = '<strong>Location:</strong>  ' + formatLocation(location) + ', <strong>Date:</strong> ' + dates[nextDateIndex];
             nextDateIndex++;
             
             for (const [locationCoord] of Object.entries(coordinatesMap)) {
@@ -120,7 +122,7 @@ function showPreviousEvent() {
         }
 
         location = location.trim();
-        eventElement.textContent = 'Location: ' + formatLocation(location) + ', Date: ' + dates[nextDateIndex];
+        eventElement.innerHTML = '<strong>Location:</strong>  ' + formatLocation(location) + ', <strong>Date:</strong> ' + dates[nextDateIndex];
         console.log(nextDateIndex);
         nextDateIndex--;
 
@@ -142,9 +144,12 @@ function showPreviousEvent() {
     }
 }
     </script>
+    {{range .Artists}}
+    <h1 class = "Name">{{.Name}} Concert</h1>
+    {{end}}
     <section class="bouton">
-        <button onclick="showNextEvent()">Show next event</button>
-      <button onclick="showPreviousEvent()">Show previous event</button>
+      <button class = "btn" onclick="showNextEvent()">Show next event</button>
+      <button class = "btn" onclick="showPreviousEvent()">Show previous event</button>
       </section>
       <section class="info-event">
         <p id="event"></p>

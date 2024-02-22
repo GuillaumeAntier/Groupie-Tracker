@@ -1,0 +1,99 @@
+nav {
+    background-color: white;
+    opacity: 0.8;
+    margin-bottom: 50px;
+}
+
+
+nav img {
+    height: 110px;
+    margin: 15px;
+    background: none;
+}
+
+body {
+    /*background-color: #e2e2e2;*/
+    padding: 0px;
+    margin: 0px;
+    background-image: url(https://wallpapercave.com/wp/wp9042956.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow-x: hidden;
+}
+  p{
+    color: #e2e2e2;
+    font-size: 30px;
+    justify-content: center;
+
+}
+
+.commentaire {
+    background-color: rgb(51 ,90 ,81);
+    display: inline-block;
+    width: 550px;
+    padding: 50px;
+    margin-left: 150px;
+    border-radius: 10%;
+
+}
+
+.comment2 {
+    background-color: rgb(68, 141, 116);
+    width: 500px;
+    padding: 50px;
+    border-radius: 10%;
+    justify-content: end;
+    margin-left: 60%;
+    margin-top: -5%;
+}
+
+.commentaire3{
+    background-color: rgb(77, 151, 125);
+    display: inline-block;
+    width: 550px;
+    padding: 50px;
+    margin-left: 150px;
+    border-radius: 10%;
+
+}
+
+button {
+    position: relative;
+    display: inline-block;
+    margin: 15px;
+    padding: 15px 30px;
+    text-align: center;
+    font-size: 18px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: #48ac8d;
+    background: transparent;
+    cursor: pointer;
+    transition: ease-out 0.5s;
+    border: 2px solid #48ac8d;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 0 #48ac8d;
+    align-items: center;
+  }
+  
+  button:hover {
+    color: white;
+    box-shadow: inset 0 -100px 0 0 #f8faf9;
+  }
+  
+  button:active {
+    transform: scale(0.9);
+  }
+
+  .btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+
+a {
+    text-decoration: none;
+    color: #48ac8d;
+}

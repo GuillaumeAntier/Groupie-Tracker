@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -26,6 +27,10 @@ type Event struct {
 	DatesLocations map[string][]string `json:"datesLocations"`
 }
 
+type Events struct {
+	Index []Event 
+}
+
 type LocationDates struct {
 	Location string
 	Dates    []string
@@ -34,6 +39,10 @@ type LocationDates struct {
 type LocationCity struct {
 	Latitude  string `json:"lat"`
 	Longitude string `json:"lon"`
+}
+
+var client = &http.Client{
+    Timeout: time.Second * 10,  
 }
 
 func openAPI(w http.ResponseWriter, r *http.Request, url string) ([]byte, error) {
@@ -135,6 +144,31 @@ func servePageArtist(w http.ResponseWriter, r *http.Request, html string, data [
 		return
 	}
 }
+func servePagePresentation(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
+	page, err := template.ParseFiles("html/" + html)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	err = page.Execute(w, data)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+}
+
+func servePagePresentation2(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
+	page, err := template.ParseFiles("html/" + html)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	err = page.Execute(w, data)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+}
 
 func servePageResult(w http.ResponseWriter, r *http.Request, html string, data []Artist) {
 	if r.URL.Path != "/result" {
@@ -156,7 +190,7 @@ func servePageResult(w http.ResponseWriter, r *http.Request, html string, data [
 	}
 }
 
-func servePageEvent(w http.ResponseWriter, r *http.Request, html string, data []LocationDates, coordinatesMap map[string][]LocationCity) {
+func servePageEvent(w http.ResponseWriter, r *http.Request, html string, dataArtist []Artist ,data []LocationDates, coordinatesMap map[string][]LocationCity) {
 	if r.URL.Path != "/event" {
 		codeErreur(w, r, 404, "Page not found")
 		return
@@ -167,9 +201,11 @@ func servePageEvent(w http.ResponseWriter, r *http.Request, html string, data []
 		return
 	}
 	err = page.Execute(w, struct {
+		Artists        []Artist
 		DatesLocations []LocationDates
 		Coordinates    map[string][]LocationCity
-	}{
+	}{	
+		Artists:        dataArtist,
 		DatesLocations: data,
 		Coordinates:    coordinatesMap,
 	})
@@ -177,6 +213,35 @@ func servePageEvent(w http.ResponseWriter, r *http.Request, html string, data []
 		codeErreur(w, r, 500, "Internal server error")
 		return
 	}
+}
+
+
+
+func Home(w http.ResponseWriter, r *http.Request) {
+	url := "https://groupietrackers.herokuapp.com/api/"
+	bodyart, err := openAPI(w,r,url + "artists")
+	var artist []Artist
+	err = json.Unmarshal(bodyart, &artist)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	servePagePresentation(w, r, "presentation.html", artist)
+
+}
+
+func Home2(w http.ResponseWriter, r *http.Request) {
+	url := "https://groupietrackers.herokuapp.com/api/"
+	bodyart, err := openAPI(w,r,url + "artists")
+	var artist []Artist
+	err = json.Unmarshal(bodyart, &artist)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	servePagePresentation2(w, r, "presentation2.html", artist)
 }
 
 func HandlerMain(w http.ResponseWriter, r *http.Request) {
@@ -215,6 +280,24 @@ func eventHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	bodyart, err := openAPI(w, r, url+"artists")
+	var art []Artist
+	err = json.Unmarshal(bodyart, &art)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	var artist []Artist
+	for _, a := range art {
+		id,err := strconv.Atoi(id)
+		if err != nil {
+			codeErreur(w, r, 500, "Internal server error")
+			return
+		}
+		if a.ID == id {
+			artist = append(artist, a)
+		}
+	}
 	locationDateSlice := sortDatesLocations(event.DatesLocations)
 	cordinatesMap := make(map[string][]LocationCity)
 
@@ -226,17 +309,17 @@ func eventHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		cordinatesMap[location] = []LocationCity{{latitude, longitude}}
 	}
-	servePageEvent(w, r, "event.html", locationDateSlice, cordinatesMap)
+	servePageEvent(w, r, "event.html", artist ,locationDateSlice, cordinatesMap)
 }
 
+
 func getCoordinates(location string) (string, string, error) {
-	baseURL := "https://nominatim.openstreetmap.org/search"
 	params := url.Values{}
 	location = strings.Replace(location, "-", ",", -1)
 	params.Set("q", location)
 	params.Set("format", "json")
 
-	resp, err := http.Get(baseURL + "?" + params.Encode())
+	resp, err := client.Get("https://nominatim.openstreetmap.org/search?format=json&q=" + url.QueryEscape(location))
 	if err != nil {
 		return "", "", err
 	}
@@ -276,9 +359,11 @@ func codeErreur(w http.ResponseWriter, r *http.Request, status int, message stri
 
 func main() {
 	fmt.Println(string("\033[34m"), "[SERVER_INFO] : Starting local Server...")
-
+	
 	http.Handle("/JS/", http.StripPrefix("/JS/", http.FileServer(http.Dir("JS"))))
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.HandleFunc("/presentation", Home)
+	http.HandleFunc("/presentation2", Home2)
 	http.HandleFunc("/", HandlerMain)
 	http.HandleFunc("/index", HandlerMain)
 	http.HandleFunc("/result", searchHandler)
