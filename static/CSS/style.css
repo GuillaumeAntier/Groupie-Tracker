@@ -1,12 +1,14 @@
 body {
-    background-color: #e2e2e2;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #444444;
+    font-size: 9pt;
+    background-color: #E4E2DD;
 }
 
 a {
     text-decoration: none;
-    font-size: 18px;
     margin-right: 40px;
-    color: black;
+    color: #444444;
 }
 
 
@@ -32,9 +34,15 @@ a {
 
 .onglet {
     display: flex;
-    align-items: center; /* Centre verticalement */
-    justify-content: center; /* Centre horizontalement */
+    align-items: center; 
+    justify-content: center;
     margin-left: 325px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.onglet :hover {
+    color: rgb(175, 174, 174);
 }
 
 .recherche {
@@ -46,21 +54,63 @@ a {
     gap: 20px;
 }
 
+.recherche-btn {
+    display: inline-block;
+    background-color: #7B7A72; 
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    padding: 10px 24px;
+    border-radius: 8px;
+}
+
+.recherche-btn:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid #7B7A72;
+}
+
+.home-btn {
+    display: inline-block;
+    background-color: #7B7A72; 
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    padding: 10px 24px;
+    border-radius: 8px;
+}
+
+.home-btn:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid #7B7A72;
+}
 
 
 .barre {
         display: flex;
-        background-color: #f0f0f0; /* Couleur de fond grise */
-        border-radius: 62px; /* Bords arrondis */
-        padding: 8px; /* Espacement interne pour un look plus aéré */
+        background-color: #f0f0f0; 
+        border-radius: 62px; 
+        padding: 8px; 
         align-items: center;
-        
+        justify-content: center;
+        gap: 10px;
+        border-color: black;
+        border-width: 2px;
 }
 
 input[type="text"] {
-    border: none; /* Supprime la bordure par défaut du champ de saisie */
-    outline: none; /* Supprime la bordure de mise au point */
-    width: 200px; /* Largeur du champ de saisie (ajustez selon vos besoins) */
+    border: none;
+    outline: none; 
+    width: 200px; 
     background-color: #f0f0f0;
 }
 
@@ -74,9 +124,9 @@ input[type="text"] {
 
 .cover-item {
     display: flex;
-    flex-direction: column; /* Pour empiler les éléments verticalement */
-    align-items: center; /* Pour centrer horizontalement les éléments */
-    text-align: center; /* Pour centrer le texte à l'intérieur de l'article */
+    flex-direction: column; 
+    align-items: center; 
+    text-align: center; 
 }
 
 .img-artiste {

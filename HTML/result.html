@@ -22,10 +22,9 @@
             <form action = "/result" method="get">
                 <section class="barre">
                     <input type="text" name="research" placeholder="Rechercher...">
-                    <button type = "submit">Research</button>
                 </section>
             </form>
-            <a href="/index"><button>Home</button></a>
+            <button class = "recherche-btn" type = "submit">Rechercher</button>
           </section>
         </section>
     </nav>
@@ -36,6 +35,9 @@
         function goToUrl(sort) {
             var urlParams = new URLSearchParams(window.location.search);
             var research = urlParams.get('research');
+            if (research == null) {
+                research = '';
+            }
             window.location.href = '/result?research=' + encodeURIComponent(research) + '&sort=' + sort;
         }
     </script>
