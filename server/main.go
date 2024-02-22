@@ -61,6 +61,46 @@ func filterArtistsByLetter(artists []Artist, letter string) []Artist {
 	return filteredArtists
 }
 
+func sortAlphabetically(w http.ResponseWriter,r *http.Request,artists []Artist) []Artist {
+	if r.URL.Query().Get("sort") == "A-Z" {
+		sort.Slice(artists, func(i, j int) bool {
+			return artists[i].Name < artists[j].Name
+		})
+	} else if r.URL.Query().Get("sort") == "Z-A" {
+		sort.Slice(artists, func(i, j int) bool {
+			return artists[i].Name > artists[j].Name
+		})
+	}
+	return artists
+}
+
+func sortAndFilter(w http.ResponseWriter, r *http.Request, artists []Artist) []Artist {
+    research := r.URL.Query().Get("research")
+    sortParam := r.URL.Query().Get("sort")
+
+    if research != "" {
+        var filteredArtists []Artist
+        for _, artist := range artists {
+            if strings.Contains(strings.ToLower(artist.Name), strings.ToLower(research)) {
+                filteredArtists = append(filteredArtists, artist)
+            }
+        }
+        artists = filteredArtists
+    }
+
+    if sortParam == "A-Z" {
+        sort.Slice(artists, func(i, j int) bool {
+            return artists[i].Name < artists[j].Name
+        })
+    } else if sortParam == "Z-A" {
+        sort.Slice(artists, func(i, j int) bool {
+            return artists[i].Name > artists[j].Name
+        })
+    }
+
+    return artists
+}
+
 func sortDatesLocations(datesLocations map[string][]string) []LocationDates {
 	var locationDatesSlice []LocationDates
 	for location, dates := range datesLocations {
@@ -82,15 +122,7 @@ func servePageArtist(w http.ResponseWriter, r *http.Request, html string, data [
 		return
 	}
 
-	if r.URL.Query().Get("sort") == "A-Z" {
-		sort.Slice(data, func(i, j int) bool {
-			return data[i].Name < data[j].Name
-		})
-	} else if r.URL.Query().Get("sort") == "Z-A" {
-		sort.Slice(data, func(i, j int) bool {
-			return data[i].Name > data[j].Name
-		})
-	}
+	data = sortAlphabetically(w,r,data)
 
 	page, err := template.ParseFiles("HTML/" + html)
 	if err != nil {
@@ -109,6 +141,9 @@ func servePageResult(w http.ResponseWriter, r *http.Request, html string, data [
 		codeErreur(w, r, 404, "Page not found")
 		return
 	}
+
+	data = sortAndFilter(w,r,data)
+
 	page, err := template.ParseFiles("HTML/" + html)
 	if err != nil {
 		codeErreur(w, r, 500, "Template not found : result.html")
