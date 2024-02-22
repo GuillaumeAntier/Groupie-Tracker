@@ -3,14 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="../static/css/style.css" rel="stylesheet">
+    <title>Artiste</title>
 </head>
 <body>
-    <a href="/accueil"><button >Home</button></a>
-    <form action = "/result" method="get">
-        <input type="text" name="research" placeholder="Rechercher...">
-        <button type = "submit" >Research</button>
-    </form>
+    <nav class="haut">
+        <section class="logo">
+            <a href="index.html">
+              <img src="../static/image/groupie-tracker.png" width ="200" height="200">
+            </a>
+        </section>
+        <section class="global">
+            <section class="onglet">
+              <a href="index">Accueil</a>
+              <a href="result">Artiste</a>
+            </section>
+          <section class="recherche">
+            <form action = "/result" method="get">
+                <section class="barre">
+                    <input type="text" name="research" placeholder="Rechercher...">
+                    <button type = "submit">Research</button>
+                </section>
+            </form>
+            <a href="/index"><button>Home</button></a>
+          </section>
+        </section>
+    </nav>
     {{range .}}
         <img src="{{.Image}}" alt="{{.Name}}">
         <p>{{.Name}}</p>

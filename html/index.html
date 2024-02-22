@@ -9,24 +9,23 @@
 <body>
     <nav class="haut">
         <section class="logo">
-            <a href="accueil.html">
+            <a href="index.html">
               <img src="../static/image/groupie-tracker.png" width ="200" height="200">
             </a>
         </section>
         <section class="global">
             <section class="onglet">
-              <a href="accueil">Accueil</a>
+              <a href="index">Accueil</a>
               <a href="result">Artiste</a>
             </section>
           <section class="recherche">
             <form action = "/result" method="get">
                 <section class="barre">
                     <input type="text" name="research" placeholder="Rechercher...">
+                    <button type = "submit">Research</button>
                 </section>
             </form>
-            <button type = "submit"
-            >Research</button>
-            <a href="/accueil"><button>Home</button></a>
+            <a href="/index"><button>Home</button></a>
           </section>
         </section>
     </nav>
@@ -38,7 +37,7 @@
               <img src="{{.Image}}" alt="{{.Name}}" class="img-artiste">
           </label>
           <div class="popup">
-              <label for="popup-{{.Name}}" class="close-button">×</label>
+              <label for="popup-{{.Name}}" class="close-button">x</label>
               <div class="popup-content">
                   <h2>{{.Name}}</h2>
                   <div class="Members">
@@ -46,12 +45,17 @@
                       <p>{{.}}</p>
                       {{end}}
                   </div>
-              </div>
-          </div>
+                  <form action = "/event" method="get">
+                    <input type="hidden" name="id" value="{{.ID}}">
+                    <button type = "submit" >Events</button>
+                  </form>
+                  </div>
+            </div>
           <div class="info">
               <h2>{{.Name}}</h2>
           </div>
       </article>
+      
       {{end}}
   </section>
 </body>

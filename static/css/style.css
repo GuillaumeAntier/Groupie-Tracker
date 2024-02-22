@@ -13,6 +13,7 @@ a {
 .haut {
     display: flex;
     align-items: center;
+    justify-content: center;
     
 
         .global {
@@ -48,9 +49,12 @@ a {
 
 
 .barre {
+        display: flex;
         background-color: #f0f0f0; /* Couleur de fond grise */
         border-radius: 62px; /* Bords arrondis */
         padding: 8px; /* Espacement interne pour un look plus aéré */
+        align-items: center;
+        
 }
 
 input[type="text"] {
@@ -120,4 +124,23 @@ input[type="text"] {
 
 .Members {
     margin-top: 10px;
+}
+
+.carte {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bouton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+.info-event {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
