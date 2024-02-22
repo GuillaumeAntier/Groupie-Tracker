@@ -164,13 +164,17 @@ func getCoordinates(location string) (string, string, error) {
 }
 
 func main() {
+	http.Handle("/CSS/", http.StripPrefix("/CSS/", http.FileServer(http.Dir("CSS"))))
+	fmt.Println(string("\033[34m"), "[SERVER_INFO] : Starting local Server...")
 
+	http.Handle("/JS/", http.StripPrefix("/JS/", http.FileServer(http.Dir("JS"))))
 	http.HandleFunc("/", HandlerMain)
 	http.HandleFunc("/index", HandlerMain)
 	http.HandleFunc("/result", searchHandler)
 	http.HandleFunc("/event", eventHandler)
 
-	fmt.Println("Server is listening...")
+	fmt.Println(string("\033[32m"), "[SERVER_READY] : on http://localhost:8080/index ✅ ")
+	fmt.Println(string("\033[33m"), "[SERVER_INFO] : To stop the program : Ctrl + c")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 
 }
