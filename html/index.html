@@ -11,6 +11,8 @@
         <input type="text" name="research" placeholder="Rechercher...">
         <button type = "submit" >Research</button>
     </form>
+    <a href ="/index?sort=A-Z"><button >A-Z</button></a>
+    <a href ="/index?sort=Z-A"><button >Z-A</button></a>
     <a href="/index"><button >Home</button></a>
         {{range .}}
         <img src="{{.Image}}" alt="{{.Name}}">
