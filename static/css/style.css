@@ -2,55 +2,50 @@ body {
     background-color: #e2e2e2;
 }
 
-.haut {
-    display: flex;
-    align-items: center;
-
-        .global {
-            display: flex;
-            align-items: center;
-            gap: 50px;
-            margin-left: auto;
-    
-        }
-}
-
-.onglet {
-    display: flex;
-    align-items: center; /* Centre verticalement */
-    justify-content: center; /* Centre horizontalement */
-    margin-right: 350px;
-}
-
-.cover-artiste-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-column-gap: 10px;
-    grid-row-gap: 1em;
-  }
-
-
-.cover-item {
-    text-align: center;
-    width: 100%;
-    height: auto;
-}
-
-.img-artiste {
-    border-radius: 20%;
-    border: solid;
-}
-
-.img-artiste:hover {
-    opacity: 0.4; /* Opacité lorsque la souris est sur l'image */
-}
-    
 a {
     text-decoration: none;
     font-size: 18px;
     margin-right: 40px;
     color: black;
 }
+
+
+.haut {
+    display: flex;
+    align-items: center;
+    
+
+        .global {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            margin-left: 20px;
+    
+        }
+}
+
+.logo {
+    margin-left: 20px;
+}
+
+
+.onglet {
+    display: flex;
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre horizontalement */
+    margin-left: 325px;
+}
+
+.recherche {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    float: right;
+    margin-left: 250px;
+    gap: 20px;
+}
+
+
 
 .barre {
         background-color: #f0f0f0; /* Couleur de fond grise */
@@ -63,4 +58,66 @@ input[type="text"] {
     outline: none; /* Supprime la bordure de mise au point */
     width: 200px; /* Largeur du champ de saisie (ajustez selon vos besoins) */
     background-color: #f0f0f0;
+}
+
+.cover-artiste-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 10px;
+    grid-row-gap: 1em;
+    align-items: center;
+}
+
+.cover-item {
+    display: flex;
+    flex-direction: column; /* Pour empiler les éléments verticalement */
+    align-items: center; /* Pour centrer horizontalement les éléments */
+    text-align: center; /* Pour centrer le texte à l'intérieur de l'article */
+}
+
+.img-artiste {
+    border-radius: 20%;
+    border: solid;
+}
+
+
+.popup-trigger {
+    display: none;
+}
+
+
+.popup-trigger + label {
+    cursor: pointer;
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+}
+
+.popup-trigger:checked + label + .popup {
+    display: block;
+}
+
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.popup-content {
+    text-align: center;
+}
+
+.Members {
+    margin-top: 10px;
 }
