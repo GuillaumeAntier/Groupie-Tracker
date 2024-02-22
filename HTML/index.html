@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <link href="../CSS/style.css" rel="stylesheet"/> 
+    <link href="../static/css/style.css" rel="stylesheet"/> 
     <title>Groupie-Tracker</title>
   </head>
   <body>
@@ -11,22 +11,35 @@
       <nav class="haut">
         <section class="logo">
           <a href="index.html">
-            <img src="../image/groupie-tracker.png" widht ="300" height="300">
+            <img src="../static/image/groupie-tracker.png" widht ="200" height="200">
           </a>
         </section>
         <section class="global">
           <section class="onglet">
-            <a href="">Accueil</a>
-            <a href="">Artiste</a>
-            <a href="">Localisation</a>
-            <a href="">Date</a>
+            <a href="index.html">Accueil</a>
+            <a href="result.html">Artiste</a>
+            <a href="event.html">Evenement</a>
           </section>
           <section class="barre">
-            <input type="text">
+            <input type="text" placeholder="Recherche...">
           </section>
         </section>
       </nav>
     </header>
+    <div class="cover-artiste-grid">
+      {{range .}}
+        <div class="cover-item">d
+          <img src="{{.Image}}" alt="{{.Name}}" class="img-artiste">
+          <div class="info">
+            <h2>{{.Name}}</h2>
+            {{range .Members}}
+            <p>{{.}}</p>
+            {{end}}
+          </div>
+          <p>{{.Name}}</p>
+        </div>
+      {{end}}
+    </div>
     
   </body>
 </html>

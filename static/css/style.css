@@ -1,0 +1,66 @@
+body {
+    background-color: #e2e2e2;
+}
+
+.haut {
+    display: flex;
+    align-items: center;
+
+        .global {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            margin-left: auto;
+    
+        }
+}
+
+.onglet {
+    display: flex;
+    align-items: center; /* Centre verticalement */
+    justify-content: center; /* Centre horizontalement */
+    margin-right: 350px;
+}
+
+.cover-artiste-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 10px;
+    grid-row-gap: 1em;
+  }
+
+
+.cover-item {
+    text-align: center;
+    width: 100%;
+    height: auto;
+}
+
+.img-artiste {
+    border-radius: 20%;
+    border: solid;
+}
+
+.img-artiste:hover {
+    opacity: 0.4; /* Opacité lorsque la souris est sur l'image */
+}
+    
+a {
+    text-decoration: none;
+    font-size: 18px;
+    margin-right: 40px;
+    color: black;
+}
+
+.barre {
+        background-color: #f0f0f0; /* Couleur de fond grise */
+        border-radius: 62px; /* Bords arrondis */
+        padding: 8px; /* Espacement interne pour un look plus aéré */
+}
+
+input[type="text"] {
+    border: none; /* Supprime la bordure par défaut du champ de saisie */
+    outline: none; /* Supprime la bordure de mise au point */
+    width: 200px; /* Largeur du champ de saisie (ajustez selon vos besoins) */
+    background-color: #f0f0f0;
+}

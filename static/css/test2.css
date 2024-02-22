@@ -1,0 +1,78 @@
+body {
+    padding: 0px;
+    margin: 0px;
+    background: url("https://img.texasmonthly.com/2018/11/Travis-Scott_208716_AstroworldFestival2018_RogerHo.jpg?auto=compress&crop=faces&fit=fit&fm=jpg&h=0&ixlib=php-1.2.1&q=45&w=1360" );    
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+}
+
+nav {
+    background-color: white;
+    opacity: 0.4;
+    margin-bottom: 50px;
+}
+
+nav img {
+    height: 110px;
+    margin: 15px;
+    background: none;
+}
+
+p{
+    color: #e2e2e2;
+    font-size: 30px;
+    justify-content: center;
+
+}
+
+.commentaire3{
+    background-color: rgb(187, 105, 46);
+    display: inline-block;
+    width: 550px;
+    padding: 50px;
+    margin-left: 150px;
+    border-radius: 10%;
+
+}
+
+button {
+    position: relative;
+    display: inline-block;
+    margin: 15px;
+    padding: 15px 30px;
+    text-align: center;
+    font-size: 18px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    color: #48ac8d;
+    background: transparent;
+    cursor: pointer;
+    transition: ease-out 0.5s;
+    border: 2px solid #48ac8d;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 0 #48ac8d;
+    align-items: center;
+  }
+
+  button:hover {
+    color: white;
+    box-shadow: inset 0 -100px 0 0 #f8faf9;
+  }
+  
+  button:active {
+    transform: scale(0.9);
+  }
+
+  .btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+  }
+
+
+a {
+    text-decoration: none;
+    color: #48ac8d;
+}
