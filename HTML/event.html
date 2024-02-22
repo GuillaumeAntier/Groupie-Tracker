@@ -15,10 +15,114 @@
     <script>
     var eventData = {{.DatesLocations }};  
     var coordinatesMap = {{.Coordinates }};
+    document.addEventListener('DOMContentLoaded', showNextEvent);
+
+    var nextEventIndex = 0;
+    var nextDateIndex = 0; 
+
+    
+
+    function showNextEvent() {
+    var eventElement = document.querySelector('#event');
+    var events = Array.from(document.querySelector('#events').children);
+  
+    if (nextEventIndex < events.length) {
+        var location = events[nextEventIndex].children[0].textContent;
+        var dates = Array.from(events[nextEventIndex].children[1].children).map(li => li.textContent);
+
+        if (nextDateIndex === -1 ) {
+            nextDateIndex = 1;
+          }
+        if (nextDateIndex < dates.length){
+            location = location.trim();
+            eventElement.textContent = 'Location: ' + formatLocation(location) + ', Date: ' + dates[nextDateIndex];
+            nextDateIndex++;
+            
+            for (const [locationCoord] of Object.entries(coordinatesMap)) {
+              if (locationCoord == location) {
+                if (coordinatesMap.hasOwnProperty(locationCoord)) {
+                  var locationCoordinates = coordinatesMap[locationCoord];
+                  if (locationCoordinates && locationCoordinates.length > 0) {
+                    var coordinates = locationCoordinates[0];
+                    if (coordinates) {
+                      map.setView([coordinates.lat, coordinates.lon], 12);
+                    }
+                  } 
+                } else {
+                  console.error('Invalid location: ' + location);
+                } 
+              }
+            }
+            
+        } else {
+            nextEventIndex++;
+            nextDateIndex = 0;
+            showNextEvent();
+        }
+    }
+    if (nextEventIndex >= events.length) {
+        nextEventIndex = events.length - 1;
+        nextDateIndex = events[nextEventIndex].children[1].children.length - 1;
+        eventElement.textContent = 'No more events';
+    }
+}
+
+
+function showPreviousEvent() {
+    var eventElement = document.querySelector('#event');
+    var events = Array.from(document.querySelector('#events').children);
+
+    if (nextEventIndex < 0) {
+        nextEventIndex = 0;
+        nextDateIndex = 0;
+        eventElement.textContent = 'No more previous events';
+        return;
+    }
+
+    var location = events[nextEventIndex].children[0].textContent;
+    var dates = Array.from(events[nextEventIndex].children[1].children).map(li => li.textContent);
+
+    if (nextDateIndex < 0) {
+        nextEventIndex--;
+        if (nextEventIndex >= 0) {
+            nextDateIndex = events[nextEventIndex].children[1].children.length - 1;
+            showPreviousEvent();
+        } else {
+            nextEventIndex = 0;
+            nextDateIndex = 0;
+            eventElement.textContent = 'No more previous events';
+        }
+    } else {
+        if (nextDateIndex >= dates.length) {
+            nextDateIndex = dates.length - 1;
+        }
+
+        location = location.trim();
+        eventElement.textContent = 'Location: ' + formatLocation(location) + ', Date: ' + dates[nextDateIndex];
+        console.log(nextDateIndex);
+        nextDateIndex--;
+
+        for (const [locationCoord] of Object.entries(coordinatesMap)) {
+          if (locationCoord == location) {
+            if (coordinatesMap.hasOwnProperty(locationCoord)) {
+              var locationCoordinates = coordinatesMap[locationCoord];
+              if (locationCoordinates && locationCoordinates.length > 0) {
+                var coordinates = locationCoordinates[0];
+                if (coordinates) {
+                  map.setView([coordinates.lat, coordinates.lon], 12);
+                }
+              } 
+            } else {
+              console.error('Invalid location: ' + location);
+            } 
+          }
+        }
+    }
+}
     </script>
     <a href="/index"><button >Home</button></a>
-    <button onclick="showNextEvent(coordinatesMap)">Show next event</button>
-    <button onclick="showPreviousEvent(coordinatesMap)">Show previous event</button>
+    <button onclick="showNextEvent()">Show next event</button>
+    <button onclick="showPreviousEvent()">Show previous event</button>
     <p id="event"></p>
     <ul id="events" style="display: none;">
         {{range .DatesLocations}}
@@ -34,7 +138,9 @@
     </ul>
     <section>
         <div id="map" style="width: 600px; height: 400px;"></div>
-        <script src="/JS/map.js"></script>
+        <script src="/JS/map.js">
+            
+        </script>
     </section>
 </body>
 </html>
