@@ -3,16 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../static/css/style.css" rel="stylesheet"/>
+    <link href="../CSS/style.css" rel="stylesheet"/>
     <title>Document</title>
 </head>
 <body>
+    <header>
+        <nav class="haut">
+          <section class="logo">
+            <a href="index.html">
+              <img src="../static/image/groupie-tracker.png" widht ="200" height="200">
+            </a>
+          </section>
+          <section class="global">
+            <section class="onglet">
+              <a href="index">Accueil</a>
+              <a href="result">Artiste</a>
+            </section>
+            <section class="barre">
+              <input type="text" placeholder="Recherche...">
+            </section>
+          </section>
+        </nav>
+      </header>
     <p>Groupie Tracker</p>
     <form action = "/result" method="get">
         <input type="text" name="research" placeholder="Rechercher...">
         <button type = "submit" >Research</button>
     </form>
     <a href="/index"><button >Home</button></a>
+    <div class="cover-artiste-grid">
         {{range .}}
         <img src="{{.Image}}" alt="{{.Name}}">
         
@@ -26,5 +45,6 @@
             <button type = "submit" >Events</button>
         </form>
         {{end}}
+    </div>
 </body>
 </html>
