@@ -34,8 +34,8 @@
         var Groups = {{.}}
     </script>
     <div class = "sort-btn">
-        <button onclick="goToUrl('A-Z')">A-Z</button>
-        <button onclick="goToUrl('Z-A')">Z-A</button>
+        <button onclick="goToUrlAlphabetical('A-Z')">A-Z</button>
+        <button onclick="goToUrlAlphabetical('Z-A')">Z-A</button>
         <div class="wrapper">
             <div class="price-input">
               <div class="field">
@@ -58,17 +58,27 @@
               <input type="range" class="range-max" min="1958" max="2015" value="2015" step="1 ">
             </div>
           </div>
-          <button class = "btn" onclick = "updateURL()">Filter</button>
+          <button class = "btn" onclick = "updateURLDate()">Filter</button>
         <a href = "/index"><button>Reset</button></a>
     </div>
     <script>
-        function goToUrl(sort) {
+        function goToUrlAlphabetical(sort) {
             var urlParams = new URLSearchParams(window.location.search);
             var research = urlParams.get('research');
             if (research == null) {
                 research = '';
             }
             window.location.href = '/result?research=' + encodeURIComponent(research) + '&sort=' + sort;
+        }
+        function updateURLDate() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var research = urlParams.get('research');
+            if (research == null) {
+                research = '';
+            }
+            var minYear = document.querySelector('.input-min').value;
+            var maxYear = document.querySelector('.input-max').value;
+            window.location.href = '/result?research=' + encodeURIComponent(research) + '&minYear=' + minYear + '&maxYear=' + maxYear;
         }
     </script>
     

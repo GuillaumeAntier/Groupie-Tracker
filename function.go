@@ -117,14 +117,19 @@ func SortAndFilter(w http.ResponseWriter, r *http.Request, artists []Artist) []A
 		artists = filteredArtists
 	}
 
-    if research != "" { // Check if the research parameter is not empty
-        for _, artist := range artists { // Loop through the artists
-            if strings.Contains(strings.ToLower(artist.Name), strings.ToLower(research)) { // Check if the artist name contains the research
-                filteredArtists = append(filteredArtists, artist)
+    if research != "" {
+        filteredArtists = []Artist{}
+        for _, artist := range artists {
+            if strings.Contains(strings.ToLower(artist.Name), strings.ToLower(research)) {
+                // Check if the artist is already in the list
+                if !artistInList(artist, filteredArtists) {
+                    filteredArtists = append(filteredArtists, artist)
+                }
             }
         }
         artists = filteredArtists
     }
+
 	if sortParam != "" { // Check if the sort parameter is not empty 	
     	if sortParam == "A-Z" { // Check if the sort parameter is A-Z
         	sort.Slice(artists, func(i, j int) bool {
@@ -138,6 +143,15 @@ func SortAndFilter(w http.ResponseWriter, r *http.Request, artists []Artist) []A
 	}
 
     return artists
+}
+
+func artistInList(a Artist, list []Artist) bool {
+    for _, b := range list {
+        if b.Name == a.Name {
+            return true
+        }
+    }
+    return false
 }
 
 func SortDatesLocations(datesLocations map[string][]string) []LocationDates { 
