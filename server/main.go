@@ -18,7 +18,7 @@ func main() {
 	http.HandleFunc("/result", GroupieTracker.SearchHandler)
 	http.HandleFunc("/event", GroupieTracker.EventHandler)
 
-	fmt.Println(string("\033[32m"), "[SERVER_READY] : on http://localhost:8080/index ✅ ")
+	fmt.Println(string("\033[32m"), "[SERVER_READY] : on http://localhost:8080/presentation ✅ ")
 	fmt.Println(string("\033[33m"), "[SERVER_INFO] : To stop the program : Ctrl + c")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 
