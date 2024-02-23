@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@14.6.3/distribute/nouislider.min.js"></script>
     <link rel="icon" type="image/png" href="/static/image/groupie-tracker.png" />
     <title>Groupie-Tracker</title>
 </head>
@@ -29,9 +31,34 @@
           </section>
         </section>
     </nav>
+    <script>
+        var Groups = {{.}}
+    </script>
     <div class = "sort-btn">
         <a href="/index?sort=A-Z"><button >A-Z</button></a>
         <a href="/index?sort=Z-A"><button >Z-A</button></a>
+        <div class="wrapper">
+            <div class="price-input">
+              <div class="field">
+                <span>Min</span>
+                <input type="number" class="input-min" value="1958">
+              </div>
+              <div class="separator">-</div>
+              <div class="field">
+                <span>Max</span>
+                <input type="number" class="input-max" value="2015">
+              </div>
+            </div>
+            <div class="slider">
+                    <span type = number class = input-min id = "minYear" value = 1958>1958</span>
+                    <div class="progress"></div>
+                    <span type = number class = input-max id = "maxYear" value =2015>2015</span>
+            </div>
+            <div class="range-input">
+              <input type="range" class="range-min" min="1958" max="2015" value="1958" step="1">
+              <input type="range" class="range-max" min="1958" max="2015" value="2015" step="1 ">
+            </div>
+          </div>
         <a href = "/index"><button>Reset</button></a>
     </div>
     <section class="cover-artiste-grid">
@@ -72,5 +99,7 @@
         
         {{end}}
     </section>
+    
+    <script src="/JS/range.js"></script>
 </body>
 </html>

@@ -29,9 +29,36 @@
           </section>
         </section>
     </nav>
-    <button onclick="goToUrl('A-Z')" >A-Z</button>
-    <button onclick="goToUrl('Z-A')" >Z-A</button>
-    <button onclick="goToUrl('')" >Reset</button>
+    <script>
+        var Groups = {{.}}
+    </script>
+    <div class = "sort-btn">
+        <a href="/index?sort=A-Z"><button >A-Z</button></a>
+        <a href="/index?sort=Z-A"><button >Z-A</button></a>
+        <div class="wrapper">
+            <div class="price-input">
+              <div class="field">
+                <span>Min</span>
+                <input type="number" class="input-min" value="1958">
+              </div>
+              <div class="separator">-</div>
+              <div class="field">
+                <span>Max</span>
+                <input type="number" class="input-max" value="2015">
+              </div>
+            </div>
+            <div class="slider">
+                    <span type = number class = input-min id = "minYear" value = 1958>1958</span>
+                    <div class="progress"></div>
+                    <span type = number class = input-max id = "maxYear" value =2015>2015</span>
+            </div>
+            <div class="range-input">
+              <input type="range" class="range-min" min="1958" max="2015" value="1958" step="1">
+              <input type="range" class="range-max" min="1958" max="2015" value="2015" step="1 ">
+            </div>
+          </div>
+        <a href = "/index"><button>Reset</button></a>
+    </div>
     <script>
         function goToUrl(sort) {
             var urlParams = new URLSearchParams(window.location.search);
@@ -53,15 +80,23 @@
             <div class="popup">
                 <label for="popup-{{.Name}}" class="close-button">x</label>
                 <div class="popup-content">
-                    <h2>{{.Name}}</h2>
                     <div class="Members">
+                        <h2>Members : </h2>
                         {{range .Members}}
                         <p>{{.}}</p>
                         {{end}}
                     </div>
-                    <form action = "/event" method="get">
+                    <div class = "date-of-creation">
+                        <h2>Date of creation : </h2>
+                        <p>{{.CreationDate}}</p>
+                    </div>
+                    <div class = "first-album">
+                        <h2>First album : </h2>
+                        <p>{{.FirstAlbum}}</p>
+                    </div>
+                    <form class ="event-btn" action = "/event" method="get">
                       <input type="hidden" name="id" value="{{.ID}}">
-                      <button type = "submit" >Events</button>
+                      <button class = "btn" type = "submit" >Events</button>
                     </form>
                     </div>
               </div>
@@ -72,5 +107,6 @@
         
         {{end}}
     </section>
+    <script src="/JS/range.js"></script>
 </body>
 </html>
