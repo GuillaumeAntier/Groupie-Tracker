@@ -1,0 +1,94 @@
+body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #444444;
+    font-size: 9pt;
+    background-color: #E4E2DD;
+}
+
+a {
+    text-decoration: none;
+    margin-right: 40px;
+    color: #444444;
+}
+
+
+nav img {
+    height: 110px;
+    margin: 15px;
+    background: none;
+}
+
+.haut {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 3px solid #000;
+
+        .global {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            margin-left: 20px;
+    
+        }
+    
+}
+
+.logo {
+    margin-left: 20px;
+}
+
+
+.onglet {
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    margin-left: 325px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.onglet :hover {
+    color: rgb(175, 174, 174);
+}
+
+.recherche {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    float: right;
+    margin-left: 250px;
+    gap: 20px;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #7B7A72; 
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    padding: 10px 24px;
+    border-radius: 8px;
+}
+
+.btn:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid #7B7A72;
+}
+
+.barre {
+    display: flex;
+    background-color: #f0f0f0; 
+    border-radius: 62px; 
+    padding: 8px; 
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-color: black;
+    border-width: 2px;
+}
