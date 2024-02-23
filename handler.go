@@ -2,6 +2,7 @@ package GroupieTracker
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -42,6 +43,7 @@ func ServePageResult(w http.ResponseWriter, r *http.Request, html string, data [
 	///It takes the response writer, the request and the html file as parameters.
 	///It returns the page with the data of the artists.
 	if r.URL.Path != "/result" {
+		fmt.Println(r.URL.Path)
 		CodeErreur(w, r, 404, "Page not found")
 		return
 	}

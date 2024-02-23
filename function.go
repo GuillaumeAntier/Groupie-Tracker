@@ -8,6 +8,7 @@ import (
 	"strings"
 	"sort"
 	"time"
+	"strconv"
 	"net/url"
 )
 
@@ -99,9 +100,24 @@ func SortAndFilter(w http.ResponseWriter, r *http.Request, artists []Artist) []A
 
     research := r.URL.Query().Get("research") // Get the research parameter
     sortParam := r.URL.Query().Get("sort") // Get the sort parameter
+	minYear := r.URL.Query().Get("minYear") // Get the minYear parameter
+	maxYear := r.URL.Query().Get("maxYear") // Get the maxYear parameter
+
+
+
+	var filteredArtists []Artist
+	if minYear != "" && maxYear != "" { // Check if the minYear and maxYear parameters are not empty
+		min, _ := strconv.Atoi(minYear)
+		max, _ := strconv.Atoi(maxYear)
+		for _, artist := range artists { // Loop through the artists
+			if artist.CreationDate >= min && artist.CreationDate <= max { // Check if the artist creation date is between the min and max years
+				filteredArtists = append(filteredArtists, artist)
+			}
+		}
+		artists = filteredArtists
+	}
 
     if research != "" { // Check if the research parameter is not empty
-        var filteredArtists []Artist
         for _, artist := range artists { // Loop through the artists
             if strings.Contains(strings.ToLower(artist.Name), strings.ToLower(research)) { // Check if the artist name contains the research
                 filteredArtists = append(filteredArtists, artist)
@@ -109,16 +125,17 @@ func SortAndFilter(w http.ResponseWriter, r *http.Request, artists []Artist) []A
         }
         artists = filteredArtists
     }
-
-    if sortParam == "A-Z" { // Check if the sort parameter is A-Z
-        sort.Slice(artists, func(i, j int) bool {
-            return artists[i].Name < artists[j].Name
-        })
-    } else if sortParam == "Z-A" { // Check if the sort parameter is Z-A
-        sort.Slice(artists, func(i, j int) bool {
-            return artists[i].Name > artists[j].Name
-        })
-    }
+	if sortParam != "" { // Check if the sort parameter is not empty 	
+    	if sortParam == "A-Z" { // Check if the sort parameter is A-Z
+        	sort.Slice(artists, func(i, j int) bool {
+            	return artists[i].Name < artists[j].Name
+        	})
+    	} else if sortParam == "Z-A" { // Check if the sort parameter is Z-A
+        	sort.Slice(artists, func(i, j int) bool {
+            	return artists[i].Name > artists[j].Name
+        	})
+    	}
+	}
 
     return artists
 }
