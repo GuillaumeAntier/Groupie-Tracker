@@ -99,84 +99,54 @@
 
   // Function to show the previous event 
   function showPreviousEvent() {
-    // Get the event element
     var eventElement = document.querySelector('#event');
-    // Get all events
     var events = Array.from(document.querySelector('#events').children);
 
-    // If there are no more previous events to show
     if (nextEventIndex < 0) {
-      // Reset the event index and date index
-      nextEventIndex = 0;
-      nextDateIndex = 0;
-      // Update the event element to show that there are no more previous events
-      eventElement.textContent = 'No more previous events';
-      return;
-    }
-
-    // Get the location of the previous event
-    var location = events[nextEventIndex].children[0].textContent;
-    // Get the dates of the previous event
-    var dates = Array.from(events[nextEventIndex].children[1].children).map(li => li.textContent);
-
-    // If there are no more previous dates to show
-    if (nextDateIndex < 0) {
-      // Decrement the event index
-      nextEventIndex--;
-      // If there are more previous events to show
-      if (nextEventIndex >= 0) {
-        // Set the date index to the last date
-        nextDateIndex = events[nextEventIndex].children[1].children.length - 1;
-        // Show the previous event
-        showPreviousEvent();
-      } else {
-        // Reset the event index and date index
         nextEventIndex = 0;
         nextDateIndex = 0;
-        // Update the event element to show that there are no more previous events
         eventElement.textContent = 'No more previous events';
-      }
+        return;
+    }
+
+    var location = events[nextEventIndex].children[0].textContent;
+    var dates = Array.from(events[nextEventIndex].children[1].children).map(li => li.textContent);
+
+    if (nextDateIndex < 0) {
+        nextEventIndex--;
+        if (nextEventIndex >= 0) {
+            nextDateIndex = events[nextEventIndex].children[1].children.length - 1;
+            showPreviousEvent();
+        } else {
+            nextEventIndex = 0;
+            nextDateIndex = 0;
+            eventElement.textContent = 'No more previous events';
+        }
     } else {
-      // If there are more previous dates to show
-      if (nextDateIndex >= dates.length) {
-        // Set the date index to the last date
-        nextDateIndex = dates.length - 1;
-      }
+        if (nextDateIndex >= dates.length) {
+            nextDateIndex = dates.length - 1;
+        }
+        location = location.trim();
+        eventElement.textContent = 'Location: ' + formatLocation(location) + ', Date: ' + dates[nextDateIndex];
+        nextDateIndex--;
 
-      // Remove whitespace from the location
-      location = location.trim();
-      // Update the event element with the location and date of the previous event
-      eventElement.innerHTML = '<strong>Location:</strong>  ' + formatLocation(location) + ', <strong>Date:</strong> ' + dates[nextDateIndex];
-      // Log the date index
-      console.log(nextDateIndex);
-      // Decrement the date index
-
-      // Loop through the coordinates map
-      for (const [locationCoord] of Object.entries(coordinatesMap)) {
-        // If the location matches the current location
-        if (locationCoord == location) {
-          // If the coordinates map has coordinates for the current location
-          if (coordinatesMap.hasOwnProperty(locationCoord)) {
-            // Get the coordinates for the current location
-            var locationCoordinates = coordinatesMap[locationCoord];
-            // If there are coordinates for the current location
-            if (locationCoordinates && locationCoordinates.length > 0) {
-              // Get the first set of coordinates
-              var coordinates = locationCoordinates[0];
-              // If there are coordinates
-              if (coordinates) {
-                // Set the view of the map to the coordinates
-                map.setView([coordinates.lat, coordinates.lon], 12);
-              }
-            }
-          } else {
-            // Log an error if the location is invalid
-            console.error('Invalid location: ' + location);
+        for (const [locationCoord] of Object.entries(coordinatesMap)) {
+          if (locationCoord == location) {
+            if (coordinatesMap.hasOwnProperty(locationCoord)) {
+              var locationCoordinates = coordinatesMap[locationCoord];
+              if (locationCoordinates && locationCoordinates.length > 0) {
+                var coordinates = locationCoordinates[0];
+                if (coordinates) {
+                  map.setView([coordinates.lat, coordinates.lon], 12);
+                }
+              } 
+            } else {
+              console.error('Invalid location: ' + location);
+            } 
           }
         }
-      }
     }
-  }
+}
     </script>
     {{range .Artists}}
     <h1 class = "Name">{{.Name}} Concert</h1>
